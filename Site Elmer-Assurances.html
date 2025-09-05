@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Elmer Assurances - Animation fluide</title>
+  <style>
+    /* --- Style global --- */
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      overflow-x: hidden;
+      text-align: center;
+      background: #000;
+      color: white;
+      transition: background 1s ease-in-out;
+    }
+
+    /* --- Première page : intro avec texte + logo + slogan --- */
+    #introPage {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      background: #000;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .container {
+      background-color: #b02b1f;
+      padding: 20px 40px;
+      font-style: italic;
+      font-size: 2em;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: max-width 3s ease-in-out, background-color 2s ease-in-out;
+    }
+    .container.transparent { background-color: transparent; }
+
+    .text-part { transition: opacity 2s ease-in-out; }
+    .hidden { opacity: 0; }
+    .visible { opacity: 1; }
+
+    .logo-wrapper {
+      margin-top: 40px;
+      background-color: #b02b1f;
+      width: 200px; height: 200px;
+      display: flex; justify-content: center; align-items: center;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+    }
+    .logo-wrapper.visible { opacity: 1; }
+
+    .logo-title {
+      font-size: 2.2em;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      color: white;
+    }
+
+    .slogan {
+      margin-top: 15px;
+      font-size: 1.3em;
+      font-style: italic;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+    }
+    .slogan.visible { opacity: 1; }
+
+    #blackOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      opacity: 0;
+      z-index: 20;
+      pointer-events: none;
+      transition: opacity 1s ease-in-out;
+    }
+
+    #mainPage {
+      display: none;
+      min-height: 100vh;
+      padding-top: 20px;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+    }
+
+    header {
+      padding: 20px;
+      background-color: #b02b1f;
+      font-size: 2em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      animation: fadeInDown 1.5s;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      border-bottom: 3px solid #b02b1f;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+    }
+    .tabs.visible { opacity: 1; }
+
+    .tabs button {
+      background: none;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.1em;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .tabs button:hover, .tabs button.active {
+      background-color: #b02b1f;
+      border-radius: 12px 12px 0 0;
+      transform: translateY(-3px);
+    }
+
+    .tab-content {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      display: none;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+    .tab-content.active { display: block; opacity: 1; }
+
+    .content-block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      text-align: left;
+    }
+
+    .content-block img {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+    }
+
+    .content-block .text { flex: 1; }
+    .content-block h2 {
+      margin-top: 0;
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: white;
+    }
+    .content-block p, 
+    .content-block ul {
+      font-size: 1.1em;
+      line-height: 1.6em;
+      color: #ddd;
+    }
+    .content-block ul { padding-left: 20px; }
+
+    /* --- Formulaire --- */
+    form {
+      display: flex; flex-direction: column; gap: 15px;
+      max-width: 500px; margin: 20px auto;
+    }
+    input, textarea {
+      padding: 10px; border-radius: 8px; border: none;
+      font-family: inherit; font-size: 1em;
+    }
+    button.submit {
+      background-color: #b02b1f; color: white;
+      padding: 12px; border: none; border-radius: 8px;
+      cursor: pointer; transition: 0.3s; font-size: 1em;
+    }
+    button.submit:hover { background-color: #8e241a; }
+
+    @keyframes fadeInDown { 
+      from {opacity:0; transform:translateY(-20px);} 
+      to {opacity:1; transform:translateY(0);} 
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Première page -->
+  <div id="introPage">
+    <div class="container" id="container">
+      <span class="text-part visible" id="part1">Sécurisez vos projets</span>
+    </div>
+    <div id="logo" class="logo-wrapper">
+      <div class="logo-title">ELMER</div>
+    </div>
+    <div id="slogan" class="slogan">L’assurance qui a du sens</div>
+  </div>
+
+  <div id="blackOverlay"></div>
+
+  <!-- Deuxième page -->
+  <div id="mainPage">
+    <header>ELMER ASSURANCES</header>
+
+    <div class="tabs" id="tabs">
+      <button class="tab-link active" data-tab="about">Qui sommes-nous ?</button>
+      <button class="tab-link" data-tab="services">Nos services</button>
+      <button class="tab-link" data-tab="why">Pourquoi Elmer ?</button>
+      <button class="tab-link" data-tab="contact">Contact</button>
+    </div>
+
+    <div id="about" class="tab-content active">
+      <div class="content-block">
+        <img src="images/equipe.jpg" alt="Notre équipe">
+        <div class="text">
+          <h2>Qui sommes-nous ?</h2>
+          <p>Des professionnels de l’assurance et de l’actuariat, experts en transition : 
+             cession ou transmission d’entreprise, retraite, protection des collaborateurs…</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="services" class="tab-content">
+      <div class="content-block">
+        <img src="images/services.jpg" alt="Nos services">
+        <div class="text">
+          <h2>Nos services</h2>
+          <ul>
+            <li>Conseils en cession / transmission d’entreprise</li>
+            <li>Préparation de la retraite du dirigeant</li>
+            <li>Protection sociale des expatriés</li>
+            <li>Couvertures homme-clé et associés</li>
+            <li>Cyber-risques, climat et risques émergents</li>
+            <li>Optimisation de votre couverture assurantielle</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="why" class="tab-content">
+      <div class="content-block">
+        <img src="images/pourquoi.jpg" alt="Pourquoi Elmer">
+        <div class="text">
+          <h2>Pourquoi Elmer ?</h2>
+          <p>Une approche sur-mesure, confidentielle et humaine.<br>
+          Nous privilégions l’écoute et la co-construction, pour sécuriser votre avenir face aux nouveaux risques.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact avec EmailJS -->
+    <div id="contact" class="tab-content">
+      <h2>Contactez-nous</h2>
+      <form id="contact-form">
+        <input type="text" name="nom" placeholder="Votre nom" required>
+        <input type="email" name="email" placeholder="Votre email" required>
+        <textarea name="message" placeholder="Votre message..." rows="5" required></textarea>
+        <button type="submit" class="submit">Envoyer</button>
+      </form>
+      <p>📧 contact@elmerassurances.fr<br>
+         9, rue Saint-Ambroise, 75011 Paris<br>
+         RCS Paris 984352435 - ORIAS n°24004492</p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    /* Animation intro */
+    const introPage = document.getElementById('introPage');
+    const container = document.getElementById('container');
+    const part1 = document.getElementById('part1');
+    const logo = document.getElementById('logo');
+    const slogan = document.getElementById('slogan');
+    const blackOverlay = document.getElementById('blackOverlay');
+    const mainPage = document.getElementById('mainPage');
+    const tabs = document.getElementById('tabs');
+
+    setTimeout(() => { part1.classList.add('hidden'); }, 2000);
+    setTimeout(() => { container.classList.add('transparent'); }, 3000);
+    setTimeout(() => { logo.classList.add('visible'); }, 4000);
+    setTimeout(() => { slogan.classList.add('visible'); }, 6000);
+    setTimeout(() => {
+      blackOverlay.style.opacity = 1;
+      setTimeout(() => {
+        introPage.style.display = 'none';
+        mainPage.style.display = 'block';
+        setTimeout(() => {
+          blackOverlay.style.opacity = 0;
+          mainPage.style.opacity = 1;
+          tabs.classList.add('visible');
+        }, 800);
+      }, 1000);
+    }, 9000);
+
+    /* Onglets */
+    const tabLinks = document.querySelectorAll(".tab-link");
+    const tabContents = document.querySelectorAll(".tab-content");
+    tabLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        tabLinks.forEach(btn => btn.classList.remove("active"));
+        tabContents.forEach(content => content.classList.remove("active"));
+        link.classList.add("active");
+        document.getElementById(link.dataset.tab).classList.add("active");
+      });
+    });
+
+    /* EmailJS */
+    (function() {
+      emailjs.init("1OGyY0YdZue66gpRR"); // ta Public Key
+    })();
+
+    document.getElementById("contact-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      emailjs.sendForm(
+        "service_4zksz4h",  // Service ID
+        "template_95hriod", // Template ID
+        this
+      ).then(function() {
+        alert("✅ Message envoyé avec succès !");
+      }, function(error) {
+        alert("❌ Erreur : " + JSON.stringify(error));
+      });
+    });
+  </script>
+
+</body>
+</html>
